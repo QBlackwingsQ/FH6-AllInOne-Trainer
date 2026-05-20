@@ -28,6 +28,7 @@ public enum RuntimeProfileFeature
     SpeedTrapMultiplier,
     MissionTimeScale,
     FreeClothing,
+
 }
 
 internal sealed class RuntimeProfileHookDescriptor
