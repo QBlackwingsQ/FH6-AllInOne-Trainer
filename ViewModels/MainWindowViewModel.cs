@@ -68,7 +68,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
         NavItems = new ObservableCollection<NavItem>
         {
-            new("Dashboard",      MaterialIconKind.ViewDashboardOutline,        typeof(DashboardViewModel),    IsWorking: true),
             new("Unlocks",        MaterialIconKind.LockOpenVariantOutline,      typeof(UnlocksViewModel),      IsWorking: true),
             new("Database",       MaterialIconKind.DatabaseEditOutline,         typeof(DatabaseViewModel),     IsWorking: true),
         };

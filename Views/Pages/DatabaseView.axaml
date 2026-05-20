@@ -1,190 +1,102 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="using:FH6Mod.ViewModels.Pages"
-             xmlns:b="using:FH6Mod.Behaviors"
              x:Class="FH6Mod.Views.Pages.DatabaseView"
              x:DataType="vm:DatabaseViewModel">
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="36,28" Spacing="20" b:StaggerEntrance.Enable="True">
+        <StackPanel Margin="28,24" Spacing="12">
 
-            <!-- Header -->
-            <StackPanel Orientation="Horizontal" Spacing="14">
-                <Border Background="{DynamicResource Surface2Brush}"
-                        BorderBrush="{DynamicResource SurfaceBorderBrush}"
-                        BorderThickness="1" CornerRadius="10" Padding="10">
-                    <materialIcons:MaterialIcon Kind="{Binding PageIcon}" Width="22" Height="22"
-                                                Foreground="{DynamicResource AccentBrush}" />
-                </Border>
-                <StackPanel VerticalAlignment="Center" Spacing="2">
-                    <TextBlock Text="{Binding PageTitle}" Classes="h1" />
-                    <TextBlock Text="{Binding PageSubtitle}" Classes="subtle" TextWrapping="Wrap" />
-                </StackPanel>
+            <!-- Quick action -->
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,4">
+                <Button Classes="primary" Padding="16,8" FontSize="13"
+                        Content="Unlock Everything"
+                        ToolTip.Tip="Free Cars + Install Flags + Autoshow + Clear NEW + Add All Cars"
+                        Command="{Binding UnlockEverythingCommand}" />
             </StackPanel>
 
-            <!-- Info banner -->
-            <Border Padding="14,10" CornerRadius="8" BorderThickness="1"
-                    Background="#1A4DA3FF" BorderBrush="#4DA3FF">
-                <StackPanel Spacing="4">
-                    <TextBlock FontWeight="SemiBold" FontSize="12" Foreground="#7FBFFF"
-                               Text="ℹ  How SQL writes behave" />
-                    <TextBlock FontSize="12" TextWrapping="Wrap"
-                               Foreground="{DynamicResource TextSecondary}"
-                               Text="These actions inject SQL queries directly into the game's CDatabase via remote shellcode + ExecuteQuery vtable. Effect is immediate but only persists for the current session — when you restart the game, the in-memory database reloads from disk and the change is gone. Backup tables (_backup_*) are created automatically before each mutation so the game can recover if anything misbehaves." />
-                </StackPanel>
-            </Border>
-
+            <!-- Status -->
             <Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" CornerRadius="8" BorderThickness="1"
+                    Padding="10,6" CornerRadius="6" BorderThickness="1"
                     Background="#1A3DDC97" BorderBrush="#3DDC97">
-                <TextBlock Text="{Binding StatusMessage}" FontSize="13"
+                <TextBlock Text="{Binding StatusMessage}" FontSize="12"
                            Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap" />
             </Border>
 
+            <!-- Engine log -->
             <Border IsVisible="{Binding DiagnosticsMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" CornerRadius="8" BorderThickness="1"
+                    Padding="10,6" CornerRadius="6" BorderThickness="1"
                     Background="{DynamicResource Surface1Brush}"
                     BorderBrush="{DynamicResource SurfaceBorderBrush}">
-                <StackPanel Spacing="6">
-                    <TextBlock Text="SQL ENGINE LOG" Classes="eyebrow" />
+                <StackPanel Spacing="4">
+                    <TextBlock Text="SQL LOG" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextDim}" />
                     <TextBlock Text="{Binding DiagnosticsMessage}" FontSize="11"
                                FontFamily="Consolas, Courier New, monospace"
                                Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" />
                 </StackPanel>
             </Border>
 
-            <TextBlock Text="ONE-SHOT SQL ACTIONS" Classes="eyebrow" />
+            <!-- Section: Toggle locks -->
+            <TextBlock Text="PERSISTENT LOCKS (re-applied every 10s)" FontSize="11" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextDim}" Margin="0,6,0,0" />
 
-            <!-- Unlock Everything mega button -->
-            <Border Padding="22" CornerRadius="12" BorderThickness="2"
-                    Background="#2AFF6A1F" BorderBrush="{DynamicResource AccentBrush}">
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
-                    <Border Grid.Column="0" Width="50" Height="50" CornerRadius="12" Background="#3AFF6A1F">
-                        <materialIcons:MaterialIcon Kind="LockOpenCheckOutline" Width="26" Height="26"
-                            Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-                        <TextBlock Text="Unlock Everything" FontSize="18" FontWeight="Bold" />
-                        <TextBlock Text="Free Cars + Install Flags + Autoshow Unlock + Clear NEW Tags + Add All Cars — all at once." Classes="dim" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <Button Grid.Column="2" Classes="primary" FontSize="14" Padding="20,10"
-                            Content="UNLOCK ALL" Command="{Binding UnlockEverythingCommand}" VerticalAlignment="Center" />
-                </Grid>
-            </Border>
-
-            <!-- Clear NEW tag -->
-            <Border Classes="card" Padding="22">
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
-                    <Border Grid.Column="0" Width="42" Height="42" CornerRadius="10" Background="{DynamicResource Surface2Brush}">
-                        <materialIcons:MaterialIcon Kind="TagOff" Width="22" Height="22"
-                            Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                        <TextBlock Text="Clear &quot;NEW!&quot; Tag on Cars" Classes="h3" />
-                        <TextBlock Text="Removes the persistent NEW badge from every car in your garage." Classes="dim" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <Button Grid.Column="2" Classes="primary" Content="Apply"
-                            Command="{Binding ClearNewTagCommand}" VerticalAlignment="Center" />
-                </Grid>
-            </Border>
-
-            <!-- Free car prices: TOGGLE LOCK + one-shot Apply -->
-            <Border Classes="card" Padding="22">
-                <StackPanel Spacing="12">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
-                        <Border Grid.Column="0" Width="42" Height="42" CornerRadius="10" Background="{DynamicResource Surface2Brush}">
-                            <materialIcons:MaterialIcon Kind="TagHeartOutline" Width="22" Height="22"
-                                Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                            <TextBlock Text="Free Cars  (LOCK)" Classes="h3" />
-                            <TextBlock Text="Toggle ON = BaseCost stays at 0 forever (re-applied every 10s, so the game can't restore it). Toggle OFF = revert from backup." Classes="dim" TextWrapping="Wrap" />
-                        </StackPanel>
-                        <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
-                                      IsChecked="{Binding IsFreeCarsLockOn, Mode=OneWay}"
-                                      Command="{Binding ToggleFreeCarsLockCommand}" />
-                    </Grid>
-                    <Border Background="{DynamicResource Surface2Brush}" CornerRadius="6" Padding="12,8">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Classes="dim" VerticalAlignment="Center"
-                                       Text="One-shot mode: apply BaseCost=0 just once (no lock, no revert)." />
-                            <Button Grid.Column="1" Classes="ghost" Content="Apply once"
-                                    Command="{Binding FreeCarPricesCommand}" />
-                        </Grid>
-                    </Border>
+            <!-- Free Cars -->
+            <Grid ColumnDefinitions="180,*,Auto" ColumnSpacing="8" Height="34">
+                <TextBlock Grid.Column="0" Text="Free Cars (BaseCost=0)" VerticalAlignment="Center" FontSize="13" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                    <Button Classes="ghost" Content="Apply once" Padding="10,4" FontSize="11"
+                            Command="{Binding FreeCarPricesCommand}" />
                 </StackPanel>
-            </Border>
+                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
+                              IsChecked="{Binding IsFreeCarsLockOn, Mode=OneWay}"
+                              Command="{Binding ToggleFreeCarsLockCommand}" />
+            </Grid>
 
-            <!-- Install flags: TOGGLE LOCK + one-shot Apply -->
-            <Border Classes="card" Padding="22">
-                <StackPanel Spacing="12">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
-                        <Border Grid.Column="0" Width="42" Height="42" CornerRadius="10" Background="{DynamicResource Surface2Brush}">
-                            <materialIcons:MaterialIcon Kind="DownloadCircleOutline" Width="22" Height="22"
-                                Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                            <TextBlock Text="Install Flags  (LOCK)" Classes="h3" />
-                            <TextBlock Text="Toggle ON = IsInstalled/IsPurchased/IsDrivable stay at 1 for every car (re-applied every 10s, install/purchase gates stay removed). Toggle OFF = revert from backup." Classes="dim" TextWrapping="Wrap" />
-                        </StackPanel>
-                        <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
-                                      IsChecked="{Binding IsInstallFlagsLockOn, Mode=OneWay}"
-                                      Command="{Binding ToggleInstallFlagsLockCommand}" />
-                    </Grid>
-                    <Border Background="{DynamicResource Surface2Brush}" CornerRadius="6" Padding="12,8">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Classes="dim" VerticalAlignment="Center"
-                                       Text="One-shot mode: apply all 3 flags just once (no lock, no revert)." />
-                            <Button Grid.Column="1" Classes="ghost" Content="Apply once"
-                                    Command="{Binding InstallFlagsCommand}" />
-                        </Grid>
-                    </Border>
+            <!-- Autoshow -->
+            <Grid ColumnDefinitions="180,*,Auto" ColumnSpacing="8" Height="34">
+                <TextBlock Grid.Column="0" Text="Autoshow All Visible" VerticalAlignment="Center" FontSize="13" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                    <Button Classes="ghost" Content="Apply once" Padding="10,4" FontSize="11"
+                            Command="{Binding AutoshowUnlockCommand}" />
                 </StackPanel>
-            </Border>
+                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
+                              IsChecked="{Binding IsAutoshowLockOn, Mode=OneWay}"
+                              Command="{Binding ToggleAutoshowLockCommand}" />
+            </Grid>
 
-            <!-- Autoshow visibility: TOGGLE LOCK + one-shot Apply -->
-            <Border Classes="card" Padding="22">
-                <StackPanel Spacing="12">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
-                        <Border Grid.Column="0" Width="42" Height="42" CornerRadius="10" Background="{DynamicResource Surface2Brush}">
-                            <materialIcons:MaterialIcon Kind="EyeOutline" Width="22" Height="22"
-                                Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                            <TextBlock Text="Autoshow — All Cars Visible  (LOCK)" Classes="h3" />
-                            <TextBlock Text="Toggle ON = every car stays in showroom forever (re-applied every 10s, so the game can't filter them back out). Toggle OFF = revert from backup." Classes="dim" TextWrapping="Wrap" />
-                        </StackPanel>
-                        <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
-                                      IsChecked="{Binding IsAutoshowLockOn, Mode=OneWay}"
-                                      Command="{Binding ToggleAutoshowLockCommand}" />
-                    </Grid>
-                    <Border Background="{DynamicResource Surface2Brush}" CornerRadius="6" Padding="12,8">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Classes="dim" VerticalAlignment="Center"
-                                       Text="One-shot mode: apply visibility just once (no lock, no revert)." />
-                            <Button Grid.Column="1" Classes="ghost" Content="Apply once"
-                                    Command="{Binding AutoshowUnlockCommand}" />
-                        </Grid>
-                    </Border>
+            <!-- Install Flags -->
+            <Grid ColumnDefinitions="180,*,Auto" ColumnSpacing="8" Height="34">
+                <TextBlock Grid.Column="0" Text="Install Flags" VerticalAlignment="Center" FontSize="13" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                    <Button Classes="ghost" Content="Apply once" Padding="10,4" FontSize="11"
+                            Command="{Binding InstallFlagsCommand}" />
                 </StackPanel>
-            </Border>
+                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
+                              IsChecked="{Binding IsInstallFlagsLockOn, Mode=OneWay}"
+                              Command="{Binding ToggleInstallFlagsLockCommand}" />
+            </Grid>
+
+            <!-- Section: One-shot actions -->
+            <TextBlock Text="ONE-SHOT ACTIONS" FontSize="11" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextDim}" Margin="0,6,0,0" />
+
+            <!-- Clear NEW Tag -->
+            <Grid ColumnDefinitions="180,*" ColumnSpacing="8" Height="34">
+                <TextBlock Grid.Column="0" Text="Clear NEW! Tag" VerticalAlignment="Center" FontSize="13" />
+                <Button Grid.Column="1" Classes="ghost" Content="Apply" Padding="10,4" FontSize="11"
+                        HorizontalAlignment="Left"
+                        Command="{Binding ClearNewTagCommand}" />
+            </Grid>
 
             <!-- Add All Cars -->
-            <Border Classes="card" Padding="22">
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
-                    <Border Grid.Column="0" Width="42" Height="42" CornerRadius="10" Background="{DynamicResource Surface2Brush}">
-                        <materialIcons:MaterialIcon Kind="GiftOutline" Width="22" Height="22"
-                            Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                        <TextBlock Text="Add All Cars (free grant)" Classes="h3" />
-                        <TextBlock Text="Inserts a free-grant row for every car not yet in your garage. Reopen game and visit Autoshow/Garage to claim." Classes="dim" TextWrapping="Wrap" />
-                    </StackPanel>
-                    <Button Grid.Column="2" Classes="primary" Content="Apply"
-                            Command="{Binding AddAllCarsCommand}" VerticalAlignment="Center" />
-                </Grid>
-            </Border>
+            <Grid ColumnDefinitions="180,*" ColumnSpacing="8" Height="34">
+                <TextBlock Grid.Column="0" Text="Add All Cars (free grant)" VerticalAlignment="Center" FontSize="13" />
+                <Button Grid.Column="1" Classes="ghost" Content="Apply" Padding="10,4" FontSize="11"
+                        HorizontalAlignment="Left"
+                        Command="{Binding AddAllCarsCommand}" />
+            </Grid>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

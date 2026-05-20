@@ -3,6 +3,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FH6Mod.Cheats.RuntimeHook;
+using FH6Mod.Cheats.Sql;
 using FH6Mod.Services;
 using Material.Icons;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,6 +84,25 @@ public partial class UnlocksViewModel : PageViewModelBase
     {
         StatusIsError = !ok;
         StatusMessage = msg;
+    }
+
+    // ===== Quick Start (from Dashboard) =====
+    [RelayCommand]
+    private void QuickStart()
+    {
+        var cr = 999_999_999;
+        var ok1 = _cheats.Apply(RuntimeProfileFeature.Credits, cr, true);
+        IsCreditsOn = _cheats.IsActive(RuntimeProfileFeature.Credits);
+        var ok2 = _cheats.RunSql(SqlFeature.FreeCarPrices);
+        var ok3 = _cheats.RunSql(SqlFeature.AutoshowUnlock);
+        var ok4 = _cheats.RunSql(SqlFeature.InstallFlags);
+        var ok5 = _cheats.RunSql(SqlFeature.AddAllCars);
+
+        var allOk = ok1 && ok2 && ok3 && ok4 && ok5;
+        StatusIsError = !allOk;
+        StatusMessage = allOk
+            ? "Quick Start done — 999M credits, all cars free & unlocked, all in garage."
+            : "Partially applied. Check Database tab for details.";
     }
 
     // ===== Max All =====
