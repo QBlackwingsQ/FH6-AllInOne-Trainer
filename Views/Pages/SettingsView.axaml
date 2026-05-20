@@ -139,7 +139,7 @@
                                 <TextBlock Text="Test all AOB patterns against the current FH6 binary without installing hooks. Requires FH6 running." Classes="dim" TextWrapping="Wrap" />
                             </StackPanel>
                         </Grid>
-                        <Button Content="Scan All Signatures" Classes="accent"
+                        <Button Content="Scan All Signatures" Classes="primary"
                                 HorizontalAlignment="Left"
                                 IsEnabled="{Binding !IsScanning}"
                                 Command="{Binding ScanSignaturesCommand}" />
@@ -163,7 +163,7 @@
                                 <TextBlock Text="Check for other trainers (ForzaMods AIO, WeMod, etc.) that might conflict with this one." Classes="dim" TextWrapping="Wrap" />
                             </StackPanel>
                         </Grid>
-                        <Button Content="Detect Conflicts" Classes="accent"
+                        <Button Content="Detect Conflicts" Classes="primary"
                                 HorizontalAlignment="Left"
                                 Command="{Binding DetectConflictsCommand}" />
                         <Border IsVisible="{Binding HasConflicts}" Background="#33FF4444" CornerRadius="8" Padding="12">
@@ -198,7 +198,7 @@
                         <!-- Save new profile -->
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <TextBox PlaceholderText="Profile name..." Text="{Binding ProfileName, Mode=TwoWay}" />
-                            <Button Grid.Column="1" Content="Save" Classes="accent"
+                            <Button Grid.Column="1" Content="Save" Classes="primary"
                                     Command="{Binding SaveProfileCommand}" />
                         </Grid>
 
@@ -239,7 +239,7 @@
                         <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,8,0,0">
                             <Border Background="{DynamicResource Surface2Brush}"
                                     CornerRadius="999" Padding="10,4">
-                                <TextBlock Text="v3.1.1  ·  GPL-3.0" FontSize="11"
+                                <TextBlock Text="v3.1.2  ·  GPL-3.0" FontSize="11"
                                            Foreground="{DynamicResource TextSecondary}" />
                             </Border>
                             <Border Background="{DynamicResource Surface2Brush}"
