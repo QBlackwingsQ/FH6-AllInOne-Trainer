@@ -58,12 +58,13 @@ internal static class SqlFeatureCatalog
             ]),
 
         SqlFeature.AddAllCars => new(
-            "Add All Cars (grant every car free)",
-            "Marks every car for free auto-redeem grant. Reopen the game and visit Autoshow/Garage to claim.",
+            "Full Autoshow (all cars visible + buckets)",
+            "Makes every car appear in the autoshow by filling CarBuckets and recreating the Drivable_Data_Car view.",
             [
-                "CREATE TABLE IF NOT EXISTS _backup_AddAllCars_FreeCars AS SELECT * FROM Profile0_FreeCars;",
-                "INSERT OR IGNORE INTO Profile0_FreeCars (CarId, FreeCount) SELECT Id, 1 FROM Data_Car WHERE Id <> 3300 AND Id NOT IN (SELECT CarId FROM Profile0_FreeCars WHERE CarId IS NOT NULL);",
-                "UPDATE Profile0_FreeCars SET FreeCount = 1 WHERE FreeCount IS NULL OR FreeCount < 1;",
+                "DROP VIEW IF EXISTS Drivable_Data_Car;",
+                "CREATE VIEW Drivable_Data_Car AS SELECT * FROM Data_Car;",
+                "INSERT OR IGNORE INTO CarBuckets(CarId) SELECT Id FROM Data_Car WHERE Id NOT IN (SELECT CarId FROM CarBuckets);",
+                "UPDATE CarBuckets SET CarBucket=0, BucketHero=0 WHERE CarBucket IS NULL;",
             ]),
 
         SqlFeature.AutoshowUnlock => new(
@@ -174,6 +175,7 @@ internal static class SqlFeatureCatalog
             "UPDATE Data_Car SET IsDrivable = (SELECT IsDrivable FROM _backup_DataCarIsDrivable WHERE _backup_DataCarIsDrivable.Id = Data_Car.Id) WHERE EXISTS (SELECT 1 FROM _backup_DataCarIsDrivable WHERE _backup_DataCarIsDrivable.Id = Data_Car.Id);",
         ],
         SqlFeature.FreeUpgrades => [],   // too many tables to revert individually; one-shot is fine
+        SqlFeature.AddAllCars => [],     // view recreation; one-shot
         SqlFeature.FreeWheels =>
         [
             "UPDATE List_Wheels SET price = (SELECT price FROM _backup_FreeWheels WHERE _backup_FreeWheels.Id = List_Wheels.Id) WHERE EXISTS (SELECT 1 FROM _backup_FreeWheels WHERE _backup_FreeWheels.Id = List_Wheels.Id);",
