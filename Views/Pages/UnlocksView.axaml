@@ -50,7 +50,7 @@
                               IsEnabled="{Binding CanToggle}"
                               Command="{Binding ToggleCreditsCommand}" />
             </Grid>
-            <TextBlock Text="Toggle on, then reopen the Credits tab to see the updated value."
+            <TextBlock Text="Toggle on, then buy or sell something for the change to take effect."
                        FontSize="11" Foreground="#FF64B5F6" Margin="158,0,0,0" />
 
             <!-- Wheelspins -->
@@ -88,7 +88,7 @@
                               IsEnabled="{Binding CanToggle}"
                               Command="{Binding ToggleSuperWheelspinsCommand}" />
             </Grid>
-            <TextBlock Text="💡 Toggle on, then spin once. Count locks to your value — game won't show it until you spin."
+            <TextBlock Text="💡 Enable Wheelspins first, then toggle on and spin once. Count locks to your value."
                        FontSize="11" Foreground="#FF64B5F6" Margin="158,0,0,0" />
 
             <!-- Skill Points -->

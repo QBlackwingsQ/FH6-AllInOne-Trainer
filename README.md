@@ -11,13 +11,15 @@ Latest release: **[GitHub Releases](../../releases)** — download the `.zip`, e
 ## Features
 
 ### Profile Values (runtime hooks)
-- **Credits** — set any amount (10K to 999M). Toggle on, then reopen the Credits tab to see the updated value.
+- **Credits** — set any amount (10K to 999M). Toggle on, then buy/sell something for the change to take effect.
 - **Wheelspins** — set count (10–999). Toggle on, then spin once for it to lock.
-- **Super Wheelspins** — set count (10–999). Same as Wheelspins — spin once to activate.
+- **Super Wheelspins** — set count (10–999). **Enable Wheelspins first**, then toggle SWS on and spin once to activate.
 - **Skill Points** — set any amount. Toggle on, then spend a point for the change to take effect.
 - **Sell Payout** — multiply car sell prices by any value.
 - **Drift Score** — multiply drift score by any value (5x, 10x, 50x, or custom).
 - **No Skill Break** — prevents skill chains from breaking on impacts.
+
+> **Tip:** Wheelspins must be enabled for Super Wheelspins (and some other cheats) to take effect. Enable Wheelspins first, then add your other cheats.
 
 Uses inline code cave hooks with toggle+value slots — based on the paris' club approach (CALL-resolution with string-compare verification).
 
@@ -39,14 +41,15 @@ Uses inline code cave hooks with toggle+value slots — based on the paris' club
 - CRC bypass with heartbeat timer + jitter (XXH check pointer replacement)
 - 5/5 integrity check patches (MemCmp, PageHash, TextHash, CodeSection, Checksum)
 - Deferred retry for Denuvo-encrypted pages — signatures that aren't available on first scan are retried during the CRC heartbeat
+- Per-hook error handling — if one hook fails (e.g., Denuvo-protected page), other cheats continue working
 - Thread-safe patching with ExpectedOriginal sanity check
 - Pre-resolution: all hook targets are scanned before any hooks are installed
 
 ## Known Limitations
 
-- **Denuvo timing** — PageHash and TextHash code pages are encrypted by Denuvo in the static binary and only decrypted at runtime. The trainer retries missing patches during the CRC heartbeat, but there may be a brief window (first ~30s) where not all patches are active.
 - **Value Encryption bypass signature not found** on latest builds. Some profile value changes may not persist between sessions.
 - **XP / Level modding** is not yet supported. See [issue #19](../../issues/19) for discussion.
+- **Wheelspins dependency** — Super Wheelspins (and possibly Credits) require Wheelspins to be enabled first to take effect.
 - Teleport, Freeze AI, timers, gravity, and other experimental cheats from earlier versions were removed — they used signatures that matched the wrong functions and didn't work reliably.
 
 ## Build from Source
